@@ -246,7 +246,7 @@ public class SnpTracker implements Constants {
             } else if (args.length > 1) {
                 option.readOptions(args);
             } else {
-                System.err.println("Usage: java -jar -Xmx1g gec.jar param.txt\n Or:    java -jar -Xmx1g gec.jar [options] ...");
+                System.err.println("Usage: java -Xmx1g -jar snptracker.jar param.txt\n Or:    java -Xmx1g -jar snptracker.jar [options] ...");
                 return;
             }
 
