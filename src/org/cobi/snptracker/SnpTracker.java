@@ -231,7 +231,7 @@ public class SnpTracker implements Constants {
     public static void main(String[] args) {
         String PVERSION = "0.01";        // 3 chars
         String PREL = " ";               // space or p (full, or prelease)
-        String PDATE = "18/July/2013"; // 11 chars
+        String PDATE = "25/July/2013"; // 11 chars
         // TODO code application logic here
 
         long startTime = System.currentTimeMillis();
