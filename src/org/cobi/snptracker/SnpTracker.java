@@ -120,7 +120,7 @@ public class SnpTracker implements Constants {
     }
 
     public void conversionId(String ifile,
-            Map<String, String> cphash, Map<String, String> rsmhash) throws IOException {
+            Map<String, String> cphash, Map<String, String> rsmhash) throws IOException, Exception {
 
         Map<String, Integer> iprshash = this.inputRsIdHash;
         BufferedWriter bw;
@@ -131,7 +131,7 @@ public class SnpTracker implements Constants {
         }
         BufferedWriter bwe = new BufferedWriter(new FileWriter(new File(this.outputEF)));
 
-        BufferedReader bf = new BufferedReader(new FileReader(ifile));
+        LineReader bf = new CompressedFileReader(new File(ifile));
         bw.write(bf.readLine() + "rsCurrent_Chr\trsCurrent_Pos\trsCurrent\n");
 
         String tmLine;
@@ -319,9 +319,6 @@ public class SnpTracker implements Constants {
                 }
             }
 
-
-            option.parseOptions();
-            SnpTracker rs = new SnpTracker(option);
             String ifile = rs.getInputFile();
             String oefile = rs.getOutErrFile();
 
