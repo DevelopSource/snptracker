@@ -24,24 +24,68 @@ import org.cobi.util.net.NetUtils;
 public class SnpTracker implements Constants {
     // ********************* Parameters **********************//
 
-    Options option;
+    private String inputF;
+    private String outputF;
+    private String outputEF;
     private String chrPosFile;
     private String rsMergeFile;
     private Map<String, Integer> inputRsIdHash;
+    private int tag;
     private int deleted;
     private int duplicated;
     private int unChr;
 
     public SnpTracker(Options option) {
-        this.option = option;
+        this.inputF = option.inputFileName;
+        if (this.inputF.endsWith("gz")) {
+            this.outputF = option.resultFileName + "result.txt.gz";
+        } else {
+            this.outputF = option.resultFileName + "result.txt";
+        }
+        this.outputEF = option.resultFileName + "error.txt";
+        this.tag = option.idNum - 1;
+    }
+
+    public SnpTracker(String in) {
+        this.inputF = in;
+        if (this.inputF.endsWith("gz")) {
+            this.outputF = "snptracker.result.txt.gz";
+        } else {
+            this.outputF = "snptracker.result.txt";
+        }
+        this.outputEF = "snptracker.error.txt";
+        this.tag = 0;
+
+    }
+
+    public SnpTracker(String in, String out) {
+        this.inputF = in;
+        if (this.inputF.endsWith("gz")) {
+            this.outputF = out + "result.txt.gz";
+        } else {
+            this.outputF = out + "result.txt";
+        }
+        this.outputEF = out + "error.txt";
+        this.tag = 0;
+    }
+
+    public SnpTracker(String in, String column, String out) {
+        this.inputF = in;
+        if (this.inputF.endsWith("gz")) {
+            this.outputF = out + "result.txt.gz";
+        } else {
+            this.outputF = out + "result.txt";
+        }
+        this.outputEF = out + "error.txt";
+        this.tag = Integer.parseInt(column) - 1;
     }
 
     public String getInputFile() {
-        return option.inputFileName;
+        return this.inputF;
     }
 
     public String getOutErrFile() {
-        return option.resultFileName + ".error.txt";
+        return this.outputEF;
     }
 
     public Map<String, Integer> getInputRsIdHash() {

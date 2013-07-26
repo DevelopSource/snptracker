@@ -52,15 +52,15 @@ public class Options implements Constants {
          * Commands
          */
 
-        id = find("--rsid-column");
+        id = find("--rsid");
         if (id >= 0) {
             idNum = Integer.parseInt(options[id + 1]);
-            param.append("--rsid-column");
+            param.append("--rsid");
             param.append(' ');
             param.append(idNum);
             param.append('\n');
         } else {
-            String infor = "No --rsid-column option to identify id column in data! Default --rsid-column 1";
+            String infor = "No --rsid option to identify id column in data! Default --rsid 1";
             idNum = 1;
             //return false;
         }
