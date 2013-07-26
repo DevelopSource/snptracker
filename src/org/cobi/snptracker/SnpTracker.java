@@ -7,11 +7,14 @@ package org.cobi.snptracker;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 import net.sf.samtools.util.CompressedFileReader;
 import net.sf.samtools.util.LineReader;
 import org.cobi.snptracker.entity.Options;
@@ -120,8 +123,13 @@ public class SnpTracker implements Constants {
             Map<String, String> cphash, Map<String, String> rsmhash) throws IOException {
 
         Map<String, Integer> iprshash = this.inputRsIdHash;
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(option.resultFileName + ".result.txt")));
-        BufferedWriter bwe = new BufferedWriter(new FileWriter(new File(option.resultFileName + ".error.txt")));
+        BufferedWriter bw;
+        if (this.outputF.endsWith("gz")) {
+            bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(this.outputF))));
+        } else {
+            bw = new BufferedWriter(new FileWriter(new File(this.outputF)));
+        }
+        BufferedWriter bwe = new BufferedWriter(new FileWriter(new File(this.outputEF)));
 
         BufferedReader bf = new BufferedReader(new FileReader(ifile));
         bw.write(bf.readLine() + "rsCurrent_Chr\trsCurrent_Pos\trsCurrent\n");
@@ -132,7 +140,7 @@ public class SnpTracker implements Constants {
             String currentId;
             String addContent;
             String id;
-            int tag = option.idNum - 1;
+            int tag = this.tag;
 
             id = tmLine.split("\t")[tag];
             if (rsmhash.containsKey(id)) {
@@ -254,8 +262,8 @@ public class SnpTracker implements Constants {
      */
     private void readInputRsId() throws IOException, Exception {
 
-        String iF = option.inputFileName;
-        int tag = option.idNum - 1;
+        String iF = this.inputF;
+        int tag = this.tag;
         Map<String, Integer> rsId = new HashMap<String, Integer>();
         String tmLine;
         LineReader bf = new CompressedFileReader(new File(iF));
@@ -284,13 +292,20 @@ public class SnpTracker implements Constants {
                 + "@----------------------------------------------------------@";
         System.out.println(headInfor);
         Options option = new Options();
+        SnpTracker rs;
         try {
             if (args.length == 1) {
-                option.readOptions(args[0]);
+                rs = new SnpTracker(args[0]);
+            } else if (args.length == 2) {
+                rs = new SnpTracker(args[0], args[1]);
+            } else if (args.length == 3) {
+                rs = new SnpTracker(args[0], args[1], args[2]);
             } else if (args.length > 1) {
                 option.readOptions(args);
+                option.parseOptions();
+                rs = new SnpTracker(option);
             } else {
-                System.err.println("Usage: java -Xmx1g -jar snptracker.jar param.txt\n Or:    java -Xmx1g -jar snptracker.jar [options] ...");
+                System.err.println("Usage: java -Xmx1g -jar snptracker.jar input [column] output\n Or:    java -Xmx1g -jar snptracker.jar [options] ...");
                 return;
             }
 
